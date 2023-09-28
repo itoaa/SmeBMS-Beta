@@ -34,7 +34,7 @@ BMSSerial::BMSSerial(int RX, int TX, long BAUD)  : p_softSerial(RX,TX)
 
 
 
-int BMSSerial::SleapWhaitForData()
+int BMSSerial::sleepWaitForData()
 {
     return 0;
 }
@@ -49,32 +49,32 @@ int BMSSerial::sendMessage()
   p_softSerial.println(p_data);
     return 0;
 }
-int BMSSerial::setDest(char dAddress)
+int BMSSerial::setDest(byte dAddress)
 {
     p_destinationAddress = dAddress;
     return 0;
 }
-int BMSSerial::setSource(char sAddress)
+int BMSSerial::setSource(byte sAddress)
 {
     p_sourceAddress= sAddress; 
     return 0;
 }
-int BMSSerial::setVersion(char pVersion)
+int BMSSerial::setVersion(byte pVersion)
 {
     p_protocolVersion= pVersion;
     return 0;
 }
-int BMSSerial::setCommand(char Command)
+int BMSSerial::setCommand(byte Command)
 {
     p_command = Command;
     return 0;
 }
-int BMSSerial::setData(int Data)
+int BMSSerial::setData(const String& Data)
 {
     p_data = Data;
     return 0;
 }
-boolean BMSSerial::dataRecived(void)
+bool BMSSerial::dataReceived(void)
 {
   if (p_softSerial.available())
       {
