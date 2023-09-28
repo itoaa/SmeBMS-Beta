@@ -16,20 +16,16 @@ BMSSerial::BMSSerial()          // RX and TX pin for software serial, and BAUD-r
 }
 */
 
-BMSSerial::BMSSerial(int RX, int TX, long BAUD)  : p_softSerial(RX,TX)
- // RX and TX pin for software serial, and BAUD-rate
+BMSSerial::BMSSerial(int RX, int TX, long BAUD, bool isMaster)
+    : p_softSerial(RX, TX), p_isMaster(isMaster)
 {
+    p_softSerial.begin(BAUD);  // Initiera SoftwareSerial med angiven Baud rate
     p_serialSpeed = BAUD;
-
-     // Define pin modes for TX and RX
-    pinMode(RX, INPUT);
-    pinMode(TX, OUTPUT);
-    
-    // Set the baud rate for the SoftwareSerial object
-    p_softSerial.begin(p_serialSpeed);   
-    
+    // Om det finns en tidigare tilldelad adress i EEPROM, läs den
+    if(!p_isMaster) {  // Om detta inte är master-enheten
+        p_moduleAddress = EEPROM.read(0);
+    }
 }
-
 
 
 
@@ -134,4 +130,26 @@ char BMSSerial::processSerial()
     }
   } // if #
 return 0;
+}
+
+
+// This need fixing ***********************************************
+void BMSSerial::requestAddress() {
+    if(!p_isMaster) {  // Ensure this is a slave module
+        p_softSerial.println("ADDRESS_REQUEST");
+    }
+}
+
+void BMSSerial::handleAddressAssignment(String message) {
+    if(!p_isMaster && message.startsWith("ADDRESS_ASSIGN:")) {
+        p_moduleAddress = message.substring(14).toInt();
+        EEPROM.write(0, p_moduleAddress);  // Save the address to EEPROM
+    }
+}
+
+void BMSSerial::assignAddress(byte moduleAddress, byte newAddress) {
+    if(p_isMaster) {  // Ensure this is the master module
+        String message = "ADDRESS_ASSIGN:" + String(newAddress);
+        p_softSerial.print(message);
+    }
 }

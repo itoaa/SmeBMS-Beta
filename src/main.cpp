@@ -11,7 +11,7 @@
 #include <avr/sleep.h>
 #include "BMSSerial.h"
 
-BMSSerial bmsSerial(RX_PIN,TX_PIN,BAUDRATE);
+BMSSerial bmsSerial(RX_PIN,TX_PIN,BAUDRATE, SLAVE);
 
 Volt myVolt(ANALOG_REF_PIN,1200);
 

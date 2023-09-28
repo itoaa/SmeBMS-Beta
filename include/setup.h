@@ -6,6 +6,6 @@
 #define ANALOG_REF_PIN      PB2
 #define PWM_PIN             PB1
 #define BAUDRATE            4800
-
+#define SLAVE               0
 
 # endif
